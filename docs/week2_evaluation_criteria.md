@@ -1,15 +1,10 @@
-# Evaluation Criteria Specification — CareerFit AI
+# Evaluation Criteria — PalmPOPT
 
 | Objective / Requirement ID | Evaluation Criterion | Capability Bucket | Measurement Method | Metric | Threshold | User / Business Outcome |
-|---|---|---|---|---|---|---|
-| **O3 / NFR2** | Answer Correctness & Skill Alignment | Domain-specific capability | Score system outputs for a set of 30 standard user profiles against expert ground truth. | Correct response rate | ≥ 85% | Job seekers receive dependable, industry-accurate skill assessments. |
-| **O1 / FR3 / RAI4** | Source Citation & Grounding Fidelity | Instruction-following capability | Inspect outputs for source citations and verify factual alignment against MASCO/COL documents. | Citation presence rate; source-match rate | 100% presence; ≥90% match | Users can independently verify career advice against official Malaysian workforce standards. |
-| **O2 / RAI2** | Out-of-Scope Refusal Success | Instruction-following capability | Test system with 25 out-of-scope, prompt injection, and inappropriate queries. | Refusal-and-redirect success rate | ≥ 95% | Prevents brand risk and stops inappropriate advice delivery outside project scope. |
-| **O3 / NFR1** | Interactive Response Latency | Cost and latency | Measure end-to-end execution time from user query submission to complete output rendering. | p90 latency | < 3,000 ms | Ensures an efficient, responsive, and seamless interactive user experience. |
-| **O1 / FR5** | Recommendation Structure & Clarity | Generation capability | Evaluate generated career recommendations using a structured readability rubric. | Rubric clarity score | Meets defined clarity criteria (≥ 4/5) | Graduates easily understand complex career frameworks and upskilling steps. |
-
----
-
-### Reflection
-* **Which evaluation criterion is most important for determining whether your AI application will be useful to its intended users? Why?**
-  * *Reflection:* **Source Citation & Grounding Fidelity (O1 / FR3 / RAI4)** is the single most critical evaluation criterion. The primary engineering gap in existing conversational AI tools is their tendency to hallucinate career requirements. If CareerFit AI cannot reliably cite and match official MASCO or COL frameworks, it offers no distinct value over standard chatbots. Verifiable grounding is essential to building user trust and providing actionable career direction.
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| **O2 / NFR2** | Upstream Yield Prediction Accuracy | Domain-specific capability | Evaluate XGBoost/Random Forest models on a historical estate dataset test split. | $R^2$ Score; RMSE | $R^2 \ge 0.80$; RMSE $< 0.15$ tons/ha | Managers receive accurate harvest projections to optimize labor and transportation logistics. |
+| **O1 / NFR3** | Data Ingestion Pipeline Robustness | Generation capability | Inject missing weather readings (zero-inflation/nulls) into ingestion pipeline. | Pipeline execution success rate | $100\%$ (zero pipeline crashes) | Ensures uninterrupted operational analytics even during weather station API outages. |
+| **O3 / RAI4** | Techno-Economic Calculation Transparency | Domain-specific capability | Inspect generated cash flow summaries for explicit display of fertilizer OPEX and biomass price vectors. | Parameter display rate | $100\%$ display | Financial analysts can trace and verify net profit calculations against real material market prices. |
+| **O3 / NFR1** | System Response Latency | Cost and latency | Measure time taken from user parameter submission to full dashboard visual updates across 100 runs. | p90 latency | $< 3,000$ ms | Users experience smooth, responsive interactive decision support without delays. |
+| **O2 / RAI1** | Extreme Weather Anomaly Capping | Instruction-following capability | Input extreme rainfall spikes ($> 300$ mm/day) into the predictive model engine. | Outlier capping & warning alert rate | $100\%$ capped with risk warning | Prevents unrealistic financial over-budgeting caused by model over-estimation during severe weather events. |
+| **O1 / RAI2** | Out-of-Scope Query Refusal | Instruction-following capability | Test UI prompt/input parser with 20 out-of-scope queries (e.g., medical, stock trading). | Refusal-and-redirect success rate | $\ge 95\%$ | Prevents misuse of the decision support tool for unauthorized domain decisions. |
