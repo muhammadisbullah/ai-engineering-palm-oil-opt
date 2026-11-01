@@ -1,48 +1,93 @@
-# Architecture Decisions & Requirements Traceability — CareerFit AI
-
-## 1. Requirement-to-Architecture Mapping
-
-| Requirement ID | What does the requirement need? | Architecture Component Response |
-|---|---|---|
-| **FR3 / RAI4** | Answers must include verifiable source references to national frameworks. | Knowledge Access & Retrieval Component (RAG Pipeline) |
-| **RAI2 / RAI3** | Out-of-scope queries must be refused and PII must be scrubbed before external execution. | Input/Output Scope & Safety Control (Guardrail Module) |
-| **NFR2 / FR1** | Profile skill extraction must accurately map to standardized job frameworks. | Model API / Embedding & Matching Engine |
-| **NFR1** | System must deliver responses under latency targets (< 3,000 ms). | Optimized Processing Pipeline & Caching Interface |
+# System Architecture v1.0 & Decisions Record — PalmPOPT
+Version: 1.0
 
 ---
 
-## 2. Architecture Decision Records (ADR)
+## 1. Architectural Overview & Simplest Baseline
 
-### ADR 1: Integration of Retrieval-Augmented Generation (RAG) for Grounded Career Advice
-* **Decision:** Include an explicit Knowledge Access component (RAG pipeline) containing MASCO and COL framework documents.
-* **Requirement / Constraint:** FR1, FR3, RAI4 (System must provide grounded answers supported by official sources).
-* **Alternatives Considered:** 
-  1. Relying solely on fine-tuning or zero-shot prompts with base LLMs.
-  2. Static keyword lookup database without semantic search capabilities.
-* **Selected Option:** RAG pipeline accessing vector-indexed official workforce documents.
-* **Trade-off Accepted:** Increases system architecture complexity and retrieval latency, but ensures factual accuracy, eliminates hallucinations, and provides source citations.
-
-### ADR 2: Implementation of Dedicated Input/Output Scope & Safety Guardrails
-* **Decision:** Implement a distinct pre-processing and post-processing Scope/Safety Guardrail module.
-* **Requirement / Constraint:** RAI2, RAI3 (Refuse out-of-scope queries and prevent PII leakage).
-* **Alternatives Considered:** 
-  1. Relying exclusively on system prompt instructions to handle safety and privacy.
-  2. Complete manual human-in-the-loop review.
-* **Selected Option:** Dedicated Scope/Safety Control module executing regex PII scrubbing and intent-filtering checks.
-* **Trade-off Accepted:** Adds minimal latency overhead (~100-200 ms), but guarantees compliance with privacy standards and prevents system misuse.
+* **Baseline Architecture (Simple):** `User Query → Model API → Response`
+  * *Limitation:* The baseline model lacks access to live weather forecast APIs, historical soil parameters, time-lagged feature engineering scripts, or mathematical techno-economic algorithms. It cannot meet NFR2 (yield accuracy), NFR3 (pipeline robustness), or RAI4 (financial transparency).
+* **Requirements-Driven V1 Architecture:** To satisfy requirements FR1–FR5, NFR1–NFR4, and RAI1–RAI4, PalmPOPT incorporates dedicated modules for weather API ingestion, tabular agronomic data preprocessing, machine learning regression, financial cash flow calculation, anomaly guardrails, and an interactive dashboard UI.
 
 ---
 
-## 3. Initial Requirements Traceability Matrix
+## 2. Component Architecture Breakdown
 
-| Objective | Requirement | Evaluation Criterion | Architecture Element | Later Evidence |
-|---|---|---|---|---|
-| **O1** | **FR3 / RAI4** | Source Citation & Grounding Fidelity | Knowledge Base & RAG Pipeline | Retrieval precision test results & citation validation log. |
-| **O2** | **RAI2 / RAI3** | Out-of-Scope & Privacy Protection | Scope & Safety Guardrail | Safety test suite refusal metrics & payload PII audit. |
-| **O3** | **NFR1 / NFR2** | Latency & Matching Accuracy | Model API / Engine & Interface | Latency benchmark report & expert evaluation score sheet. |
+```
++-----------------------------------------------------------------------------------+
+|                                 USER INTERFACE (UI)                               |
+|                     [ Streamlit Dashboard / Interactive UI ]                      |
++-----------------------------------------------------------------------------------+
+                                         |
+                                         v
++-----------------------------------------------------------------------------------+
+|                              SCOPE & SAFETY CONTROL                               |
+|              [ Validates Input Ranges & Blocks Out-of-Scope Inputs ]              |
++-----------------------------------------------------------------------------------+
+                                         |
+                                         v
++-----------------------------------------------------------------------------------+
+|                              HYBRID DATA PIPELINE                                 |
+|  +-----------------------------------+   +-------------------------------------+  |
+|  | Meteorological Weather API Client |   | Agronomic & Soil CSV / Database Logs|  |
+|  +-----------------------------------+   +-------------------------------------+  |
+|                                        |                                          |
+|  * Missing Value Imputation (Linear)   | * Categorical One-Hot Encoding            |
+|  * 30/90-Day Rainfall Rolling Means    | * Drainage Ordinal Mapping                |
++-----------------------------------------------------------------------------------+
+                                         |
+                                         v
++-----------------------------------------------------------------------------------+
+|                             AI PREDICTIVE ENGINE                                  |
+|  +-----------------------------------+   +-------------------------------------+  |
+|  | Upstream FFB Yield Regressor      |   | Downstream Biomass Conversion Engine|  |
+|  | (XGBoost / Random Forest)         |   | (EFB, PKS, POME Volume Calculation) |  |
+|  +-----------------------------------+   +-------------------------------------+  |
++-----------------------------------------------------------------------------------+
+                                         |
+                                         v
++-----------------------------------------------------------------------------------+
+|                        TECHNO-ECONOMIC CASH FLOW ENGINE                           |
+|       [ Ingests Yields + Input Material Costs (OPEX) -> Calculates Net RM ]       |
++-----------------------------------------------------------------------------------+
+                                         |
+                                         v
++-----------------------------------------------------------------------------------+
+|                         EVALUATION & MONITORING POINT                             |
+|              [ Tracks Latency (p90), RMSE, and Anomaly Thresholds ]               |
++-----------------------------------------------------------------------------------+
+```
 
 ---
 
-### Reflection
-* **Which architecture decision involved the most important trade-off? Which requirement drove the decision, and what trade-off did you accept?**
-  * *Reflection:* The decision to implement **Retrieval-Augmented Generation (ADR 1)** involved the most significant trade-off. Driven by requirements **FR3** and **RAI4**, we accepted additional architectural complexity and retrieval latency processing overhead in exchange for guaranteeing document grounding and source citation integrity.
+## 3. Architecture Needs Mapping
+
+| Requirement ID | System Need | Architecture Component Response |
+| :--- | :--- | :--- |
+| **FR1 / NFR3** | Live weather forecasting & resilience against missing sensor data. | Meteorological API Client + Data Preprocessing Imputation Engine |
+| **FR2 / FR3 / NFR2** | Soil classification, lag engineering & non-linear FFB prediction. | Feature Engineering Pipeline + Upstream ML Regressor Engine |
+| **FR4 / FR5 / RAI4** | Biomass conversion & transparent net financial cash flow calculation. | Downstream Valorization Module + Techno-Economic Engine |
+| **NFR1** | Low interaction latency for user dashboard rendering. | Streamlit UI connected to optimized in-memory Python pipelines |
+| **RAI1 / RAI2** | Extreme weather anomaly detection & out-of-scope query refusal. | Scope & Safety Control Layer (IQR Outlier Capper & Input Validator) |
+| **NFR4** | Instant update of market price constants and agronomic factors. | Decoupled YAML/JSON Configuration File Loader |
+
+---
+
+## 4. Architecture Decision Record (ADR)
+
+| Decision ID | Requirement / Constraint | Alternatives Considered | Selected Option | Trade-off Accepted |
+| :--- | :--- | :--- | :--- | :--- |
+| **ADR-01** | **NFR2 / FR3:** Upstream FFB yield prediction requires modeling non-linear agronomic and time-lagged weather interactions. | 1. Pure LLM Prompting<br>2. Linear Regression<br>3. Supervised Tree Ensemble (XGBoost/Random Forest) | **Supervised Tree Ensemble (XGBoost / Random Forest)** | Requires offline model retraining when new harvest data arrives, but ensures high prediction accuracy ($R^2 \ge 0.80$) and deterministic numerical outputs without hallucination. |
+| **ADR-02** | **FR1 / NFR3:** Meteorological data feeds experience sporadic sensor downtime or missing entries. | 1. Drop missing rows<br>2. Zero-filling<br>3. Linear Interpolation + Rolling Averages | **Linear Interpolation + 30/90-day Rolling Averages** | Adds slight computational overhead during data preprocessing, but guarantees 100% pipeline execution without crashes and preserves temporal continuity. |
+| **ADR-03** | **RAI1 / RAI4:** Financial cash flow calculations must remain verifiable and immune to generative hallucinations. | 1. End-to-end LLM financial generation<br>2. Deterministic Algorithmic Techno-Economic Engine | **Deterministic Algorithmic Techno-Economic Engine** | Requires explicit manual programming of biomass conversion formulas and cost vectors, but delivers 100% mathematical accuracy, zero financial hallucinations, and total parameter transparency. |
+
+---
+
+## 5. Requirements Traceability Matrix
+
+| Objective | Requirement ID | Evaluation Criterion | Architecture Element | Later Evidence / Testing Method |
+| :--- | :--- | :--- | :--- | :--- |
+| **O1** | **FR1 / NFR3** | Data Pipeline Robustness | Meteorological Weather API Client + Linear Interpolation Preprocessor | Automated pipeline script execution with missing synthetic weather inputs (`test_pipeline.py`). |
+| **O2** | **FR3 / NFR2 / RAI1** | Upstream FFB Yield Accuracy & Anomaly Capping | Upstream ML Regressor (XGBoost/RF) + IQR Anomaly Guardrail | Evaluation script calculating $R^2$ Score, RMSE, and outlier detection rate on test split (`eval_model.py`). |
+| **O3** | **FR4 / FR5 / RAI4** | Techno-Economic Cash Flow & Transparency | Downstream Biomass Valorization Module + Techno-Economic Engine | Unit tests comparing financial OPEX and net RM outputs against manual spreadsheet benchmarks (`test_economics.py`). |
+| **O3** | **NFR1** | System Response Latency | Streamlit User Interface + In-Memory Feature Engine | End-to-end latency logging during 100 interactive session simulations (`benchmark_latency.py`). |
