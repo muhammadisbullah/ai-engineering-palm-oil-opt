@@ -1,4 +1,4 @@
-# PalmPOPT — AI-Driven Agricultural Weather Forecasting & Biomass Yield-Economic Optimization System
+# PalmPOPT — AI-Driven Forecasting for Palm Oil Yield
 > An integrated AI Engineering solution that synthesizes meteorological forecasting and field-level agronomic parameters to predict upstream palm oil yields, project downstream biomass valorization output, and dynamically model operational cash flow.
 
 ---
