@@ -1,0 +1,50 @@
+{
+  "pipeline_version": "week3-v1",
+  "generated_at_utc": "2026-11-10T17:24:01.918626+00:00",
+  "records": [
+    {
+      "source_id": "S01",
+      "source_filename": "mpob_reports/Data Statistics Oil Palm 2023.pdf",
+      "source_sha256": "fa4eea7ff624f547bc62b725003a0449e1709917767a3dbdf3f70eb28d700969",
+      "prepared_output": "data/processed/prepared_text.jsonl",
+      "prepared_sha256": "f68138667411b7df9fe4428e72bf6373de34aac833f882502335aa922638dd31",
+      "processing_note": "PDF Text Extraction & Paragraph Chunking",
+      "source_version": "Verified",
+      "access_rights": "Open / Research",
+      "status": "Prepared; ready for Topic 4"
+    },
+    {
+      "source_id": "S02",
+      "source_filename": "mpob_reports/Laporan Tahunan MPOB 2023.pdf",
+      "source_sha256": "3b78604602801df5cc1a2a02951791d35346cca1d1e1524b2a2d9dcfdc814e5f",
+      "prepared_output": "data/processed/prepared_text.jsonl",
+      "prepared_sha256": "f68138667411b7df9fe4428e72bf6373de34aac833f882502335aa922638dd31",
+      "processing_note": "PDF Text Extraction & Paragraph Chunking",
+      "source_version": "Verified",
+      "access_rights": "Open / Research",
+      "status": "Prepared; ready for Topic 4"
+    },
+    {
+      "source_id": "S03",
+      "source_filename": "mpob_reports/Pocket Stat Q1 Jan - Mac 2026.pdf",
+      "source_sha256": "10d3aca9d1b19c69f40f68e2f4a6258f1769da611a669f753b7bcc704df4b80e",
+      "prepared_output": "data/processed/prepared_text.jsonl",
+      "prepared_sha256": "f68138667411b7df9fe4428e72bf6373de34aac833f882502335aa922638dd31",
+      "processing_note": "PDF Text Extraction & Paragraph Chunking",
+      "source_version": "Verified",
+      "access_rights": "Open / Research",
+      "status": "Prepared; ready for Topic 4"
+    },
+    {
+      "source_id": "S04",
+      "source_filename": "weather_soil_api.csv",
+      "source_sha256": "dd9dfb4706b28b67dfa2b568882f1e034bb525c3e1214b903cdca8318b4c708d",
+      "prepared_output": "data/processed/prepared_timeseries.csv",
+      "prepared_sha256": "46bf18f20b1a99d8f767bdd62f07f8c070a5d57e33fe0a1c457989b3cd608f86",
+      "processing_note": "Weather API Extraction & Time-Series Aggregation",
+      "source_version": "Verified",
+      "access_rights": "Open / Research",
+      "status": "Prepared; ready for Topic 4"
+    }
+  ]
+}
