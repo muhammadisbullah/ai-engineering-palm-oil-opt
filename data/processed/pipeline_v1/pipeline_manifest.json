@@ -1,0 +1,12 @@
+{
+    "pipeline_version": "v1.0",
+    "execution_timestamp": "2026-11-10T17:40:32.472423",
+    "description": "Part C outputs: Agregasi data cuaca dan analitik siri masa untuk projek PalmPOPT",
+    "artifacts": [
+        {
+            "name": "monthly_weather_summary.csv",
+            "path": "data/processed/pipeline_v1/palm_analysis/monthly_weather_summary.csv",
+            "description": "Ringkasan bulanan suhu, hujan, dan kelembapan tanah"
+        }
+    ]
+}
