@@ -1,62 +1,65 @@
 # System Architecture v1.0 & Decisions Record — PalmPOPT
-Version: 1.0
+Version: 1.0 (Non-IoT Scope)
 
 ---
 
 ## 1. Architectural Overview & Simplest Baseline
 
-* **Baseline Architecture (Simple):** `User Query → Model API → Response`
-  * *Limitation:* The baseline model lacks access to live weather forecast APIs, historical soil parameters, time-lagged feature engineering scripts, or mathematical techno-economic algorithms. It cannot meet NFR2 (yield accuracy), NFR3 (pipeline robustness), or RAI4 (financial transparency).
-* **Requirements-Driven V1 Architecture:** To satisfy requirements FR1–FR5, NFR1–NFR4, and RAI1–RAI4, PalmPOPT incorporates dedicated modules for weather API ingestion, tabular agronomic data preprocessing, machine learning regression, financial cash flow calculation, anomaly guardrails, and an interactive dashboard UI.
+* **Baseline Architecture (Simple):** `User Query → Model API → Response`[cite: 12]
+  * *Limitation:* The baseline model lacks access to Open-Meteo weather feeds, field agronomic logs, MPOB report parameters, time-lagged feature engineering, primary milling mass balance formulas, or SciPy techno-economic optimization[cite: 6, 12]. It cannot meet NFR2 (yield accuracy), NFR3 (pipeline robustness), or RAI4 (financial transparency)[cite: 12].
+* **Requirements-Driven V1 Architecture:** To satisfy requirements FR1–FR5, NFR1–NFR4, and RAI1–RAI4, PalmPOPT incorporates dedicated modules for weather API, agronomic log, and MPOB data ingestion/preprocessing (`[O1]`), ensemble ML yield forecasting and primary milling mass balance (`[O2]`), SciPy techno-economic optimization (`[O3]`), anomaly guardrails, FastAPI backend, and an interactive dashboard UI[cite: 6, 10, 12].
 
 ---
 
 ## 2. Component Architecture Breakdown
 
-```
+```text
 +-----------------------------------------------------------------------------------+
-|                                 USER INTERFACE (UI)                               |
-|                     [ Streamlit Dashboard / Interactive UI ]                      |
+|                        [O3] INTERACTIVE DASHBOARD & FASTAPI                       |
+|            [ Streamlit Dashboard UI + FastAPI Backend Service ]                   |
 +-----------------------------------------------------------------------------------+
                                          |
                                          v
 +-----------------------------------------------------------------------------------+
 |                              SCOPE & SAFETY CONTROL                               |
-|              [ Validates Input Ranges & Blocks Out-of-Scope Inputs ]              |
+|             [ Validates Input Ranges, IQR Outliers & Out-of-Scope Inputs ]        |
 +-----------------------------------------------------------------------------------+
                                          |
                                          v
 +-----------------------------------------------------------------------------------+
-|                              HYBRID DATA PIPELINE                                 |
-|  +-----------------------------------+   +-------------------------------------+  |
-|  | Meteorological Weather API Client |   | Agronomic & Soil CSV / Database Logs|  |
-|  +-----------------------------------+   +-------------------------------------+  |
-|                                        |                                          |
-|  * Missing Value Imputation (Linear)   | * Categorical One-Hot Encoding            |
-|  * 30/90-Day Rainfall Rolling Means    | * Drainage Ordinal Mapping                |
+|                       [O1] DATA INGESTION & PREPROCESSING                       |
+|  +------------------------------+  +--------------------+  +--------------------+  |
+|  | Open-Meteo Weather API       |  | Field & Agronomic  |  | MPOB PDF Reports   |  |
+|  | (Rain, Temp, RH, Solar, Wind)|  | Logs (Soil, Drain.,|  | (PaddleOCR &       |  |
+|  |                              |  | Fert./Pesticide)   |  |  LayoutLM)         |  |
+|  +------------------------------+  +--------------------+  +--------------------+  |
+|                                         |                                         |
+|  * Imputation (Linear / KNN / MissForest) & Rolling Averages                      |
+|  * Min-Max Normalization & Feature Engineering                                    |
 +-----------------------------------------------------------------------------------+
                                          |
                                          v
 +-----------------------------------------------------------------------------------+
-|                             AI PREDICTIVE ENGINE                                  |
-|  +-----------------------------------+   +-------------------------------------+  |
-|  | Upstream FFB Yield Regressor      |   | Downstream Biomass Conversion Engine|  |
-|  | (XGBoost / Random Forest)         |   | (EFB, PKS, POME Volume Calculation) |  |
-|  +-----------------------------------+   +-------------------------------------+  |
+|                [O2] ENSEMBLE ML & PRIMARY MILLING MASS BALANCE                    |
+|  +------------------------------+  +--------------------------------------------+  |
+|  | Ensemble ML Yield Models     |  | Primary Milling Mass Balance               |  |
+|  | (XGBoost, Random Forest,     |  | - CPO & Kernel (OER / KER)                 |  |
+|  |  Stacking/Voting) -> FFB     |  | - Biomass Streams: EFB, PKS, POME          |  |
+|  +------------------------------+  +--------------------------------------------+  |
 +-----------------------------------------------------------------------------------+
                                          |
                                          v
 +-----------------------------------------------------------------------------------+
-|                        TECHNO-ECONOMIC CASH FLOW ENGINE                           |
-|       [ Ingests Yields + Input Material Costs (OPEX) -> Calculates Net RM ]       |
+|                 [O3] SCIPY TECHNO-ECONOMIC OPTIMIZATION ENGINE                    |
+|  [ Maximizes Net Return (Z) via SciPy -> Cash Flows, Material OPEX, ROI (%) ]    |
 +-----------------------------------------------------------------------------------+
                                          |
                                          v
 +-----------------------------------------------------------------------------------+
 |                         EVALUATION & MONITORING POINT                             |
-|              [ Tracks Latency (p90), RMSE, and Anomaly Thresholds ]               |
+|              [ Tracks Latency (p90), RMSE, MAE, R² & Anomaly Alerts ]             |
 +-----------------------------------------------------------------------------------+
-```
+```[cite: 6, 10, 12]
 
 ---
 
@@ -64,12 +67,12 @@ Version: 1.0
 
 | Requirement ID | System Need | Architecture Component Response |
 | :--- | :--- | :--- |
-| **FR1 / NFR3** | Live weather forecasting & resilience against missing sensor data. | Meteorological API Client + Data Preprocessing Imputation Engine |
-| **FR2 / FR3 / NFR2** | Soil classification, lag engineering & non-linear FFB prediction. | Feature Engineering Pipeline + Upstream ML Regressor Engine |
-| **FR4 / FR5 / RAI4** | Biomass conversion & transparent net financial cash flow calculation. | Downstream Valorization Module + Techno-Economic Engine |
-| **NFR1** | Low interaction latency for user dashboard rendering. | Streamlit UI connected to optimized in-memory Python pipelines |
-| **RAI1 / RAI2** | Extreme weather anomaly detection & out-of-scope query refusal. | Scope & Safety Control Layer (IQR Outlier Capper & Input Validator) |
-| **NFR4** | Instant update of market price constants and agronomic factors. | Decoupled YAML/JSON Configuration File Loader |
+| **FR1 / NFR3** | Weather API, agronomic log & MPOB ingestion with resilience against missing data[cite: 6, 12]. | Open-Meteo Client + Agronomic/MPOB Parser + Imputation/Interpolation Engine[cite: 6, 12] |
+| **FR2 / FR3 / NFR2** | Agronomic/weather feature engineering & non-linear FFB yield prediction[cite: 6, 12]. | Feature Engineering Pipeline + Ensemble ML Regressor Engine (`XGBoost`, `RF`, `Stacking/Voting`)[cite: 6, 12] |
+| **FR4 / FR5 / RAI4** | Primary milling mass balance & SciPy techno-economic cash flow/ROI calculation[cite: 6, 12]. | Milling Mass Balance Module + SciPy Techno-Economic & Valuation Engine[cite: 6, 12] |
+| **NFR1** | Low interaction latency for dashboard rendering[cite: 12]. | Streamlit UI + FastAPI Backend with optimized Python pipeline[cite: 10, 12] |
+| **RAI1 / RAI2** | Extreme weather anomaly capping & out-of-scope query refusal[cite: 12]. | Scope & Safety Control Layer (IQR Outlier Capper & Input Validator)[cite: 12] |
+| **NFR4** | Instant update of market price constants, mass balance fractions & agronomic factors[cite: 6, 12]. | Decoupled YAML/JSON Configuration File Loader[cite: 12] |
 
 ---
 
@@ -77,9 +80,9 @@ Version: 1.0
 
 | Decision ID | Requirement / Constraint | Alternatives Considered | Selected Option | Trade-off Accepted |
 | :--- | :--- | :--- | :--- | :--- |
-| **ADR-01** | **NFR2 / FR3:** Upstream FFB yield prediction requires modeling non-linear agronomic and time-lagged weather interactions. | 1. Pure LLM Prompting<br>2. Linear Regression<br>3. Supervised Tree Ensemble (XGBoost/Random Forest) | **Supervised Tree Ensemble (XGBoost / Random Forest)** | Requires offline model retraining when new harvest data arrives, but ensures high prediction accuracy ($R^2 \ge 0.80$) and deterministic numerical outputs without hallucination. |
-| **ADR-02** | **FR1 / NFR3:** Meteorological data feeds experience sporadic sensor downtime or missing entries. | 1. Drop missing rows<br>2. Zero-filling<br>3. Linear Interpolation + Rolling Averages | **Linear Interpolation + 30/90-day Rolling Averages** | Adds slight computational overhead during data preprocessing, but guarantees 100% pipeline execution without crashes and preserves temporal continuity. |
-| **ADR-03** | **RAI1 / RAI4:** Financial cash flow calculations must remain verifiable and immune to generative hallucinations. | 1. End-to-end LLM financial generation<br>2. Deterministic Algorithmic Techno-Economic Engine | **Deterministic Algorithmic Techno-Economic Engine** | Requires explicit manual programming of biomass conversion formulas and cost vectors, but delivers 100% mathematical accuracy, zero financial hallucinations, and total parameter transparency. |
+| **ADR-01** | **NFR2 / FR3:** Upstream FFB yield prediction requires modeling non-linear agronomic and meteorological interactions[cite: 6, 12]. | 1. Pure LLM Prompting<br>2. Linear Regression<br>3. Supervised & Ensemble Tree Models (`XGBoost`, `RF`, `Stacking/Voting`)[cite: 6, 12] | **Ensemble Tree Models (`XGBoost`, `RF`, `Stacking/Voting`)**[cite: 6, 12] | Requires offline retraining when new harvest data arrives, but improves predictive accuracy (`RMSE`, `MAE`, `R² ≥ 0.80`) and deterministic outputs[cite: 6, 12]. |
+| **ADR-02** | **FR1 / NFR3:** Meteorological API feeds and logs experience sporadic missing values or gaps[cite: 6, 12]. | 1. Drop missing rows<br>2. Zero-filling<br>3. Linear Interpolation / Imputation + Rolling Averages[cite: 6, 12] | **Linear Interpolation / Imputation + Rolling Averages**[cite: 6, 12] | Adds slight preprocessing overhead, but prevents pipeline crashes and preserves temporal continuity[cite: 12]. |
+| **ADR-03** | **FR4 / FR5 / RAI4:** Milling mass balance and techno-economic optimization must remain verifiable and free of LLM hallucinations[cite: 6, 11, 12]. | 1. End-to-end LLM financial generation<br>2. Deterministic Mass Balance + SciPy Techno-Economic Engine[cite: 6, 11, 12] | **Deterministic Mass Balance + SciPy Techno-Economic Engine**[cite: 6, 11, 12] | Requires explicit formula and constraint setup, but provides verifiable mass balances, cash flows, `OPEX`, `ROI (%)`, and net return (`RM`)[cite: 6, 11, 12]. |
 
 ---
 
@@ -87,7 +90,7 @@ Version: 1.0
 
 | Objective | Requirement ID | Evaluation Criterion | Architecture Element | Later Evidence / Testing Method |
 | :--- | :--- | :--- | :--- | :--- |
-| **O1** | **FR1 / NFR3** | Data Pipeline Robustness | Meteorological Weather API Client + Linear Interpolation Preprocessor | Automated pipeline script execution with missing synthetic weather inputs (`test_pipeline.py`). |
-| **O2** | **FR3 / NFR2 / RAI1** | Upstream FFB Yield Accuracy & Anomaly Capping | Upstream ML Regressor (XGBoost/RF) + IQR Anomaly Guardrail | Evaluation script calculating $R^2$ Score, RMSE, and outlier detection rate on test split (`eval_model.py`). |
-| **O3** | **FR4 / FR5 / RAI4** | Techno-Economic Cash Flow & Transparency | Downstream Biomass Valorization Module + Techno-Economic Engine | Unit tests comparing financial OPEX and net RM outputs against manual spreadsheet benchmarks (`test_economics.py`). |
-| **O3** | **NFR1** | System Response Latency | Streamlit User Interface + In-Memory Feature Engine | End-to-end latency logging during 100 interactive session simulations (`benchmark_latency.py`). |
+| **O1** | **FR1 / NFR3** | Data Pipeline Robustness[cite: 12] | Open-Meteo, Agronomic & MPOB Ingestion + Imputation/Normalization Preprocessor[cite: 6, 12] | Automated pipeline script execution with missing synthetic weather/input data (`test_pipeline.py`)[cite: 12]. |
+| **O2** | **FR3 / NFR2 / RAI1** | FFB Yield Accuracy, Mass Balance & Anomaly Capping[cite: 6, 12] | Ensemble ML Regressor + Milling Mass Balance + IQR Anomaly Guardrail[cite: 6, 12] | Evaluation script calculating `RMSE`, `MAE`, `R²` Score, and outlier capping rate on test split (`eval_model.py`)[cite: 6, 12]. |
+| **O3** | **FR4 / FR5 / RAI4** | SciPy Techno-Economic Optimization & Transparency[cite: 6, 12] | SciPy Optimization & Valuation Engine + FastAPI Backend[cite: 6, 10, 12] | Unit/integration tests comparing cash flows, `OPEX`, `ROI (%)`, and net `RM` against reference benchmarks (`test_economics.py`)[cite: 6, 12]. |
+| **O3** | **NFR1** | System Response Latency[cite: 12] | Streamlit User Interface + FastAPI Backend + Feature Pipeline[cite: 10, 12] | End-to-end latency logging during 100 interactive session simulations (`benchmark_latency.py`)[cite: 12]. |
