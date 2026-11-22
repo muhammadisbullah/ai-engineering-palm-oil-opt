@@ -75,8 +75,13 @@ Existing market approaches are either fragmented (separating weather telemetry f
 ---
 
 ## Weekly Progress
+
 | Week | Focus | Deliverable | Status |
-| :---: | :--- | :--- | :---: |
-| **W1** | System map + project scope definition | `README.md` + `/docs` (Scope & System Map) | ✅ |
-| **W2** | Data engineering, SRS & architecture v1.0 | `week2_requirements.md` + Architecture | ✅ |
-| **W3** | Data pipeline implementation & EDA | Jupyter Notebooks + Preprocessing Pipeline | ⏳ |
+| :--- | :--- | :--- | :---: |
+| W1 | System map + project scope definition | `README.md` + `/docs` (Scope & System Map) | ✅ |
+| W2 | Data engineering, SRS & architecture v1.0 | `week2_requirements.md` + Architecture | ✅ |
+| W3 | Data pipeline implementation & EDA | Jupyter Notebooks + Preprocessing Pipeline | ✅ |
+| W4 | Data quality & bias audit | [`week4_data_quality_report.md`](docs/week4_data_quality_report.md) | ⏳ |
+
+- **Week 4 Quality-Gate Decision**: `[PENDING FINAL DECISION: PASS / CONDITIONAL PASS / FAIL]`
+- **Outstanding Actions**: Finalise `docs/week4_data_quality_report.md` with actual Topic 3 metrics, manifest path verification, and quality-gate decision; clean PDF text/table extraction remnants and verify path alignment before Topic 5; export updated PDF for e-learning and commit verified changes to GitHub.
