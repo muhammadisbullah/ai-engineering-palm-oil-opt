@@ -1,21 +1,17 @@
-# Data Inventory - Week 3 Project
+# Week 3 Data Inventory — PalmPOPT (`pipeline_v1`)
 
-This document details the inventory of datasets ingested and processed within the PalmPOPT data engineering pipeline.
+## 1. Raw / Source Inputs
+- `Data Statistics Oil Palm 2023.pdf` — MPOB oil palm statistics reference report (PDF).
+- `Laporan Tahunan MPOB 2023.pdf` — MPOB annual report reference document (PDF).
+- `Pocket Stat Q1 Jan - Mac 2026.pdf` — MPOB Q1 2026 pocket statistics report (PDF).
+- `weather_soil_api.csv` — Historical weather and soil time-series data from Open-Meteo API.
 
-## Ingested Datasets
+## 2. Processed & Integrated Outputs (`data/processed/pipeline_v1/palm_analysis/`)
+- `prepared_text.jsonl` — Extracted and normalized text chunks/records from MPOB PDF documents.
+- `prepared_timeseries.csv` — Cleaned and formatted weather/soil time-series dataset.
+- `mapped_parameters_output.jsonl` — Domain-mapped PalmPOPT agronomic, milling, derivative, and biomass/waste parameters.
+- `integrated_palm_dataset.jsonl` — Combined multi-source dataset integrating PDF/parameter records with time-series context.
+- `week3_manifest.json` — Run metadata, file paths, record counts, and pipeline execution summary.
 
-| Dataset Name | Source | File Format | Type | Description / Purpose |
-| :--- | :--- | :--- | :--- | :--- |
-| **Data Statistics Oil Palm 2023.pdf** | MPOB | `.pdf` | Raw Text / Tables | Contains official annual statistics on oil palm yield, production, and land areas. |
-| **Laporan Tahunan MPOB 2023.pdf** | MPOB | `.pdf` | Raw Text / Report | Annual report covering macroeconomic performance, industry insights, and agronomy data. |
-| **Pocket Stat Q1 Jan - Mac 2026.pdf** | MPOB | `.pdf` | Raw Text / Statistics | Quarterly statistical updates providing short-term performance indicators. |
-| **weather_soil_api.csv** | Open-Meteo API | `.csv` | Raw Time-Series | Daily macroclimate data (temperature at 2m, total precipitation, and 0-7cm soil moisture) for Peninsular Malaysia. |
-
-## Processed & Integrated Outputs
-
-| Output File Name | Location | Format | Description |
-| :--- | :--- | :--- | :--- |
-| `prepared_text.jsonl` | `data/processed/` | `.jsonl` | Chunked and structured text extracted from MPOB PDF documents. |
-| `prepared_timeseries.csv` | `data/processed/` | `.csv` | Aggregated daily climate and soil data over 365 days. |
-| `integrated_palm_dataset.jsonl` | `data/processed/` | `.jsonl` | Integrated dataset mapping domain parameters (*Weather*, *Soil*, *Cost*, *Yield*) to chunked text. |
-| `monthly_weather_summary.csv` | `data/processed/pipeline_v1/palm_analysis/` | `.csv` | Monthly aggregated climate indicators for predictive modeling (Part C output). |
+## 3. Planned / Pending Artifacts (Moved to Lab 4)
+- `monthly_weather_summary.csv` — Monthly aggregation of weather and soil features (pending full aggregation & feature engineering in Lab 4).
