@@ -43,9 +43,11 @@ Existing market approaches are either fragmented (separating weather telemetry f
 ---
 
 ## Project Objectives
-- **O1:** To build an data pipeline that ingests meteorological forecasts (Rainfall, Temperature) and field agronomic parameters (Soil Type, Drainage, Fertilizer/Pesticide inputs).
-- **O2:** To develop supervised Machine Learning models (XGBoost / Random Forest) that accurately predict upstream FFB yields and downstream biomass conversion fractions (EFB, PKS, POME).
-- **O3:** To construct a techno-economic valuation module and interactive dashboard that dynamically projects operational cash flows, material OPEX, and net economic returns (RM) to assist plantation managers in decision-making.
+- **O1:** To build a hybrid data ingestion and preprocessing pipeline that captures meteorological forecasts (Rainfall, Temperature via Open-Meteo API), field agronomic parameters (Soil Type, Drainage, Fertilizer/Pesticide inputs), MPOB PDF reports (processed via PaddleOCR and LayoutLM), and real-time IoT hardware telemetry (ESP32 sensors filtered using Isolation Forest)
+
+- **O2:** To develop supervised and ensemble Machine Learning models (incorporating XGBoost, Random Forest, and Stacking/Voting regressors) optimized with primary milling mass balance formulas to accurately predict upstream FFB yields and downstream biomass conversion fractions (CPO, Kernel, EFB, PKS, and POME), validated using RMSE and MAE metrics.
+
+- **O3:** To construct a techno-economic valuation and SciPy optimization engine integrated into an interactive dashboard and FastAPI backend, dynamically projecting operational cash flows, material OPEX, downstream product allocation, and net economic returns (RM) to assist plantation managers in strategic decision-making.
 
 ---
 
