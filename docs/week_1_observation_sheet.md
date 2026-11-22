@@ -1,10 +1,10 @@
 # Lab 1: Observation Sheet - PalmPOPT
 
 ## System Name
-PalmPOPT — Hybrid AI-Driven Agricultural Weather Forecasting & Biomass Yield-Economic Optimization System
+PalmPOPT — AI-Driven Forecasting for Palm Oil Yield
 
 ## Group Members
-[Nama Ahli Kumpulan / Nama Anda]
+Muhammad Isbullah bin Md Hambali
 
 ---
 
@@ -35,4 +35,4 @@ PalmPOPT — Hybrid AI-Driven Agricultural Weather Forecasting & Biomass Yield-E
 * **Risk 2 — Data Drift & Climate Vulnerability:** Rapid global climate shifts can cause severe data drift over time, reducing prediction accuracy and potentially misinforming long-term estate planning.
 
 ## 7. If you could fix ONE thing, what and why?
-* **Fix & Reason:** Implement an automated validation guardrail that cross-references live weather anomaly alerts with real-time IoT soil sensor data to dynamically adjust yield confidence intervals before displaying financial cash flow projections to users.
+* **Fix & Reason:** Implement an automated validation guardrail and outlier/anomaly check before model inference and SciPy optimization (`[O2]`–`[O3]`) that flags extreme weather spikes, missing MPOB/agronomic inputs, or unrealistic price/demand parameters, adjusting confidence bounds before displaying cash flow and ROI projections to users[cite: 11, 12].
